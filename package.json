@@ -1,8 +1,10 @@
 {
   "name": "articles",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "kkatou7209 <kkatou7209@gmail.com>",
-  "description": "記事の管理"
+  "description": "記事の管理",
+  "dependencies": {
+    "zenn-cli": "^0.1.158"
+  }
 }
