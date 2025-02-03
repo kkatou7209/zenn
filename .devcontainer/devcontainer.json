@@ -1,0 +1,14 @@
+{
+    "name": "Articles",
+    "build": {
+        "dockerfile": "./Dockerfile"
+    },
+    "postCreateCommand": "npm i",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "negokaz.zenn-editor"
+            ]
+        }
+    }
+}
