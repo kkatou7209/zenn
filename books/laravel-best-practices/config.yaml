@@ -1,15 +1,24 @@
 title: "Laravelのススメ"
 summary: "
-Laravel 初学者向けに Laravel を使った開発の方法やベストプラクティスの解説をします。\n
-
-「PHPはなんとなく触ったことがあるけど、Laravel のことは全然知らない」、「Webフレームワークを使ったことがない」という方が、実際に開発を進めながら Laravel の知識を深めていけるようになっています。\n
-
-誤字脱字やわかりにくい部分があったという方がいれば、気兼ねなくコメントで教えていただけると幸いです。
+本書で取り扱うこと\n
+\n
+・Dockerを使ったLaravelの開発環境の構築\n
+・セキュリティ\n
+・プロジェクト構造\n
+\n
+本書で取り扱わないこと\n
+・PHPの基礎文法\n
+・JavaScript/TypeScriptの基礎文法\n
+・HTTPについての基礎的な説明\n
+\n
+本書の対象読者\n
+・一通りのプログラミング経験がある方\n
+・Webフレームワークを使った開発経験がある方\n
 "
 topics: ['laravel', 'ベストプラクティス', 'PHP']
 published: false
 price: 0 # 有料の場合200〜5000
 # 本に含めるチャプターを順番に並べましょう
 chapters:
-  - what-is-web-framework
+  - preface
   - preparing-environment
