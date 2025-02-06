@@ -1,0 +1,1 @@
+- [Laravelでの安全なウェブサイトの作り方。](https://qiita.com/kk0128/items/7cbaf136cfbc441c7e34)

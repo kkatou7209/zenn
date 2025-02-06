@@ -4,54 +4,18 @@ title: "開発環境の準備"
 
 # 概要
 
-本章ではLaravelの開発環境の構築を行います。
+本章では開発環境の構築を行います。
 
-使用するツールをざっと紹介します。
+準備するのは以下の項目です。
 
-## Docker
-
-Dockerは仮想環境を実行するためのツールです。
-
-普通言われる仮想環境とは少し違いのですが、詳しい説明はここでは行いません。
-
-開発環境の準備や破棄が簡単に行えるので、今回はDocker上に開発環境を構築します。
-
-## Visual Studio Code (VSCode)
-
-Microsoftが開発しているエディターです。
-
-Dockerとスムーズに連携できる拡張機能があるので利用します。
-
-# Docker Desktop のインストール
-
-1. まず[こちらのリンク](https://www.docker.com/get-started/)から **Docker Desktop** をインストールしてください。
-
-2. *Download Docker Desktop* から、自分のPCにあったインストーラを選択してください。
-
-![](https://storage.googleapis.com/zenn-user-upload/c2a255077be0-20250202.png)
-
-3. インストールが終わったらアプリケーションメニューから Docker Desktop を起動します。
-
-4. Docker Hub へのログインを求められるかもしれませんが、スキップして構いません。
+- PHPとMariaDBのコンテナ
+- Laravelプロジェクト
 
 :::message
-**Windows で Docker を使用する場合**
-Windowsでコンテナ（仮想環境）を動かすためには **Windows Subsystem for Linux（WSL）** を有効化する必要があります。
-WSL を有効化する方法についてはインターネット上に情報が転がっているのでここでは説明しません。
+VSCodeとDockerはすでにインストール済みであることを前提として進めていきます。
 :::
 
-:::message
-**Mac OS で Docker を使う場合**
-Docker Desktop よりも軽量で高速な **OrbStack** というツールがあります。
-Mac で Docker を使用する際はこちらをお勧めします。
-Docker Desktop で開発をしていた場合も簡単にデータを移行できます。
-:::
-
-# VSCode のインストール
-
-[こちらのリンク](https://code.visualstudio.com/download)へいき、自身の環境にあったインストーラーをダウンロードしてください。
-
-# プロジェクトの作成
+# Docker環境の作成
 
 コマンドプロンプト（またはターミナル）を開き、任意のディレクトリに移動してください。（ここではホームディレクトリを使用することにします）
 
@@ -90,9 +54,7 @@ VSCode が立ち上がったら、左のナビゲーションにある下記の�
 
 ## コンテナの作成
 
-今回は PHP と MariaDB のコンテナを立てます。
-
-それぞれ PHP コンテナは Laravel 用、MariaDB はデータベースです。
+次にPHPとMariaDBのコンテナを準備します。
 
 プロジェクトディレクトリに `.devcontainer`というディレクトリを作ってください。
 
@@ -100,7 +62,7 @@ VSCode のエクスプローラー（左のナビゲーションの一番上）�
 
 ![](https://storage.googleapis.com/zenn-user-upload/2b0d2b5c8b80-20250202.png =400x)
 
-次に `.devcontainer` ディレクトリの下に `app` ディレクトリと `db` ディレクトリを作成します。
+`.devcontainer` ディレクトリの下に `app` ディレクトリと `db` ディレクトリを作成します。
 
 ![](https://storage.googleapis.com/zenn-user-upload/d45a0a81b8e5-20250202.png =400x)
 
@@ -234,7 +196,6 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | b
                 "onecentlin.laravel-extension-pack",
                 "formulahendry.auto-rename-tag",
                 "bmewburn.vscode-intelephense-client",
-                "edwinhuish.better-comments-next",
                 "ecmel.vscode-html-css",
                 "neilbrayfield.php-docblocker",
                 "jacobcassidy.css-nesting-syntax-highlighting"
@@ -275,3 +236,129 @@ v23.7.0
 ディレクトリ構造は以下のようになっているはずです。
 
 ![](https://storage.googleapis.com/zenn-user-upload/42ae57c4ee36-20250202.png =400x)
+
+# Laravelプロジェクトの作成
+
+プロジェクトルート（ここでは `/laravel-app`）で `composer create laravel/laravel tmp` を実行します。
+
+```bash:/laravel-app
+$ composer create laravel/laravel tmp
+```
+
+`tmp` という名前のディレクトリが作られ、その下にLaravelのプロジェクトが初期化されます。
+
+次にこの `tmp` 配下のプロジェクトをプロジェクトルートに引っ越しします。
+
+:::message
+現在のディレクトリで初期化することもできますが、すでにファイルやディレクトリがある場合は作成できません。
+今回はすでに `.devcontainer` などのディレクトリが存在するため、一度別のディレクトリで初期化しています。
+:::
+
+プロジェクトができたらディレクトリを引っ越していきます。
+
+プロジェクトルートで以下のコマンドを実行してください。
+
+```bash:/laravel-app
+$ rm -rf ./tmp/vendor/* # vendor以下は持ってこれないので消してしまう
+$ mv ./tmp/{.,}* ./
+```
+
+もう `tmp` ディレクトリはいらないので消してしまいましょう。
+
+```bash:/laravel-app
+$ rm -r ./tmp
+```
+
+あとは以下のコマンドを実行してください。
+
+```bash:/laravel-app
+$ composer install # パッケージインストール
+$ php artisan key:generate # 秘密鍵の生成
+```
+
+
+# データベース設定
+
+次はLaravelとMariaDBを繋げましょう。
+
+ドライバはコンテナ立ち上げ時にインストールしてあります。
+
+`.env` ファイルを見てみてください。
+
+データベース関連の項目が以下のようになっているかと思います。
+
+```ini:/laravel-app/.env
+DB_CONNECTION=sqlite
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=laravel
+# DB_USERNAME=root
+# DB_PASSWORD=
+```
+
+次のように変更してください。
+
+```diff ini:/laravel-app
+- DB_CONNECTION=sqlite
+- # DB_HOST=127.0.0.1
+- # DB_PORT=3306
+- # DB_DATABASE=laravel
+- # DB_USERNAME=root
+- # DB_PASSWORD=
++ DB_CONNECTION=mysql
++ DB_HOST=db
++ DB_PORT=3306
++ DB_DATABASE=db-name
++ DB_USERNAME=db-user
++ DB_PASSWORD=db-pass
+```
+
+コマンドでマイグレーションを行いましょう。
+
+以下のような出力が出てくれば成功です。
+
+```bash:/laravel-app
+$ php artisan migrate
+
+   INFO  Preparing database.  
+
+  Creating migration table ............................................................................................................ 24.78ms DONE
+
+   INFO  Running migrations.  
+
+  0001_01_01_000000_create_users_table ................................................................................................ 71.08ms DONE
+  0001_01_01_000001_create_cache_table ................................................................................................ 13.55ms DONE
+  0001_01_01_000002_create_jobs_table ................................................................................................ 107.22ms DONE
+```
+
+:::message
+**データベース自体の設定について**
+「データベース自体の設定もしていないのになぜ接続できたのか」と不思議に思う方もいるかもしれません。
+実はデータベースの上のデータベースやユーザーの作成は `compose.yml` の `environment` で行なっています。
+特定の環境変数に値を設定することで、コンテナ作成時に自動で設定を行ってくれるのです。
+
+ちなみに本番環境ではこのような設定で稼働させてはいけません。
+パスワードも単調で予測しやすいですし、第一リポジトリ上に上がってしまっています。
+実際の本番環境の構築ではちゃんとクエリを使って設定し、パスワードも強固なものにして別の場所に保管するようにしましょう。
+:::
+
+
+最後にサーバーを起動して正常に動いている確認しましょう。
+
+```bash:/laravel-app
+$ php artisan serve
+
+   INFO  Server running on [http://127.0.0.1:8000].  
+
+  Press Ctrl+C to stop the server
+```
+
+ブラウザで `http://127.0.0.1:8000` を開いてください。
+
+Laravelの初期画面が表示されていればOKです。
+
+![alt text](/images/image.png)
+
+---
+
+開発環境の準備は以上です。
