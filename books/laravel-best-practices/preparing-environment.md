@@ -10,6 +10,7 @@ title: "開発環境の準備"
 
 - PHPとMariaDBのコンテナ
 - Laravelプロジェクト
+- TypeScript
 
 :::message
 VSCodeとDockerはすでにインストール済みであることを前提として進めていきます。
@@ -239,6 +240,8 @@ v23.7.0
 
 # Laravelプロジェクトの作成
 
+## テンプレートプロジェクトの作成
+
 プロジェクトルート（ここでは `/laravel-app`）で `composer create laravel/laravel tmp` を実行します。
 
 ```bash:/laravel-app
@@ -276,6 +279,27 @@ $ composer install # パッケージインストール
 $ php artisan key:generate # 秘密鍵の生成
 ```
 
+## 地域設定
+
+Laravelの地域設定はデフォルトではアメリカになっています。
+
+これを日本に変えましょう。
+
+プロジェクト直下の`.env`を以下のように変えてください。
+
+```diff ini:/laravel-app/.env
+...
+- APP_TIMEZONE=UTC
++ APP_TIMEZONE=Asia/Tokyo
+...
+- APP_LOCALE=en
+- APP_FALLBACK_LOCALE=en
+- APP_FAKER_LOCALE=en_US
++ APP_LOCALE=ja
++ APP_FALLBACK_LOCALE=ja
++ APP_FAKER_LOCALE=ja_JP
+...
+```
 
 # データベース設定
 
@@ -358,6 +382,165 @@ $ php artisan serve
 Laravelの初期画面が表示されていればOKです。
 
 ![alt text](/images/image.png)
+
+
+# ViteとTypeScriptの設定
+
+デフォルトの設定でもJacaScriptとViteを利用できますが、TypeScriptbの方が潜在的なバグも減り、開発効率も上がります。
+
+ここではTypeScriptの設定を行います。
+
+TypeScript関連のパッケージをインストールする必要がありますが、まずはパッケージマネージャを変更しましょう。
+
+今回はBunを使います。NPMよりもサイズが小さく、動作も高速なのでコンテナ向きです。
+
+```bash:/laravel-app
+$ npm i -g bun
+```
+
+Bunのインストールが完了したら次はTypeScriptの利用に必要なパッケージをインストールします。
+
+```bash:/laravel-app
+$ bun i -D typescript @types/jsdom @types/node
+```
+
+次に`tsconfig.json`をプロジェクトルートに作成してください。
+
+以下の内容をコピペしてください。
+
+```json:/laarvel-app/tsconfig.json
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+            "@/*": ["resources/ts/*"],
+            "@css/*": ["resources/css/*"]
+        },
+        "target": "ESNext",
+        "module": "ESNext",
+        "types": [
+            "vite/client"
+        ],
+        "strict": true,
+        "noImplicitThis": true,
+        "skipLibCheck": true,
+
+    },
+    "include": [
+        "resources/ts/**/*.ts",
+        "resources/ts/**/*.d.ts"
+    ],
+    "exclude": [
+        "app",
+        "bootstrap",
+        "config",
+        "database",
+        "node_modules",
+        "public",
+        "routes",
+        "storage",
+        "tests",
+        "vendor"
+    ]
+}
+```
+
+TypeScriptを利用するように変更したので、`vite.config.js`も変更していきます。
+
+拡張子を`ts`に変えて以下のように変更してください。
+
+```diff ts:/laravel-app/vite.config.ts
+export default defineConfig({
+    plugins: [
+        laravel({
+-            input: ['resources/css/app.css', 'resources/js/app.js'],
++            input: ['resources/ts/app.ts'],
+            refresh: true,
+        }),
+    ],
+});
+```
+
+`resources/js`ディレクトリを`resources/ts`に変更します。
+
+`resiurces/ts`配下の`js`ファイルも`ts`ファイルに変更してください。
+
+TypeScriptを利用している状態では`laravel-vite-plugin`がCSSをそのまま読み込めなくなるので、`app.ts`で読み込ませましょう。
+
+```diff ts:/laarvel-app/resources/ts/app.ts
+import './bootstrap';
++ import '@css/app.css';
+```
+
+最後にホットリロードの設定を行います。
+
+`vite.config.ts`を以下のように変更してください。
+
+```diff ts:/laravel-app/vite.config.ts
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import path from 'path';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            refresh: true,
+        }),
+    ],
++    server: {
++        host: '127.0.0.1',
++        port: 5173,
++        strictPort: true,
++        hmr: {
++            protocol: 'ws'
++        },
++        watch: {
++            usePolling: true,
++            interval: 1000,
++        }
++    },
++    resolve: {
++        alias: {
++            '@': `${path.resolve(__dirname, 'resources/ts')}/`,
++            '@css': `${path.resolve(__dirname, 'resources/css')}/`,
++        }
++    }
+});
+```
+
+`welcome.blade.php`で読み込んでいるファイル名を変更します。
+
+```diff php:/laravel-app/resources/view/welcom.blade.php
+        ...
+        <!-- Styles / Scripts -->
+        @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+-            @vite(['resources/css/app.css', 'resources/js/app.js'])
++            @vite(['resources/ts/app.ts'])
+        @else
+        ...
+```
+
+Viteサーバーを立てて表示に問題がないか確認しましょう。
+
+```bash:/laravel-app
+$ bun run dev
+
+  VITE v6.1.0  ready in 144 ms
+
+  ➜  Local:   http://127.0.0.1:5173/
+  ➜  press h + enter to show help
+
+  LARAVEL v11.41.3  plugin v1.2.0
+
+  ➜  APP_URL: http://localhost
+```
+
+`localhost:8000`をブラウザで開いてください。
+
+コンソールにエラーなど出ていなければOKです。
+
+<br>
 
 ---
 

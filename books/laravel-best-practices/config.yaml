@@ -22,3 +22,6 @@ price: 0 # 有料の場合200〜5000
 chapters:
   - preface
   - preparing-environment
+  - system-requirement
+  - setting-database
+  - setting-routing
