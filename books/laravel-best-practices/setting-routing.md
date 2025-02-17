@@ -8,14 +8,14 @@ title: "ルーティングの設定"
 
 今回開発するアプリでは以下の画面を用意する予定です。
 
-|画面|URL|
-|:-|:-|
-|ホーム画面|`/`|
-|ログイン画面|`/login`|
-|アカウント登録画面|`/signup`|
-|ToDo一覧画面|`/todo`|
-|ToDo登録画面|`/todo/add`|
-|ToDo編集画面|`/todo/edit/{id}`|
+|画面|メソッド|URL|
+|:-|:-|:-|
+|ホーム画面|`GET`|`/`|
+|ログイン画面|`GET`|`/login`|
+|アカウント登録画面|`GET`|`/signup`|
+|ToDo一覧画面|`GET`|`/todo`|
+|ToDo登録画面|`GET`|`/todo/new`|
+|ToDo編集画面|`GET`|`/todo/edit/{id}`|
 
 画面遷移は以下のようなイメージです。
 
@@ -60,43 +60,43 @@ $ php artisan make:view home
 $ php artisan make:view login
 $ php artisan make:view signup
 $ php artisan make:view todo/index
-$ php artisan make:view todo/add
+$ php artisan make:view todo/new
 $ php artisan make:view todo/edit
 ```
 
 ページの内容はさしあたり以下のようにしておきます。
 
-```php:/laravel-app/resources/home
+```php:/laravel-app/resources/views/home.blade.php
 <div>
     <h1>ホーム画面</h1>
 </div>
 ```
 
-```php:/laravel-app/resources/login
+```php:/laravel-app/resources/views/login.blade.php
 <div>
     <h1>ログイン画面</h1>
 </div>
 ```
 
-```php:/laravel-app/resources/signup
+```php:/laravel-app/resources/views/signup.blade.php
 <div>
     <h1>アカウント登録画面</h1>
 </div>
 ```
 
-```php:/laravel-app/resources/todo/index
+```php:/laravel-app/resources/views/todo/index.blade.php
 <div>
     <h1>ToDo一覧</h1>
 </div>
 ```
 
-```php:/laravel-app/resources/todo/add
+```php:/laravel-app/resources/views/todo/new.blade.php
 <div>
     <h1>ToDo登録</h1>
 </div>
 ```
 
-```php:/laravel-app/resources/todo/edit
+```php:/laravel-app/resources/views/todo/edit.blade.php
 <div>
     <h1>ToDo編集</h1>
 </div>
@@ -130,9 +130,9 @@ $ php artisan make:view todo/edit
 +             return view('todo.index');
 +         })->name('index');
 + 
-+         Route::get('/add', function () {
-+             return view('todo.add');
-+         })->name('add');
++         Route::get('/new', function () {
++             return view('todo.new');
++         })->name('new');
 + 
 +         Route::get('/edit', function () {
 +             return view('todo.edit');
@@ -155,7 +155,7 @@ GET|HEAD       / ...............................................................
   GET|HEAD       signup .................................................................................................... signup
   GET|HEAD       storage/{path} ..................................................................................... storage.local
   GET|HEAD       todo .................................................................................................. todo.index
-  GET|HEAD       todo/add ................................................................................................ todo.add
+  GET|HEAD       todo/new ................................................................................................ todo.new
   GET|HEAD       todo/edit .............................................................................................. todo.edit
   GET|HEAD       up ............................................................................................................... 
 
@@ -178,3 +178,5 @@ GET|HEAD       / ...............................................................
 
 こうすることで、突然何にかしらの理由でURL名が変更になった時も、`web.php`上のURLを変更することで、同じ名前のルートを利用しているすべての箇所に変更を反映させることができます。
 :::
+
+ルーティングの設定は以上ですが、`web.php`に関しては今後も何度か手を加えていくことになります。

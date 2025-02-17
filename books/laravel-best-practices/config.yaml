@@ -14,14 +14,26 @@ summary: "
 本書の対象読者\n
 ・一通りのプログラミング経験がある方\n
 ・Webフレームワークを使った開発経験がある方\n
+・オブジェクト指向言語を利用したことのある方\n
 "
 topics: ['laravel', 'ベストプラクティス', 'PHP']
 published: false
 price: 0 # 有料の場合200〜5000
 # 本に含めるチャプターを順番に並べましょう
 chapters:
+  # 本書について
   - preface
+  # 開発環境の準備
   - preparing-environment
+  # 開発するアプリケーションの仕様
   - system-requirement
+  # データエースの設定
   - setting-database
+  # ルーティングの設定
   - setting-routing
+  # コントローラーの設定
+  - setting-controllers
+  # リクエスト/バリデーションの設定
+  - setting-request
+  # 定数の設定
+  - setting-constants

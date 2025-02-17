@@ -28,6 +28,7 @@ title: "本書について"
 - HTTPなどのプロトコルの説明
 - JavaScript、HTML、CSSの説明
 - SanctumやPassportなどのパッケージの詳細
+- オブジェクト指向
 
 
 # 対象とする読者
