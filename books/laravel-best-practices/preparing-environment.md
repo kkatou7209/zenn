@@ -4,13 +4,12 @@ title: "開発環境の準備"
 
 # 概要
 
-本章では開発環境の構築を行います。
+## 本章で学ぶこと
 
-準備するのは以下の項目です。
-
-- PHPとMariaDBのコンテナ
-- Laravelプロジェクト
-- TypeScript
+- Docker環境の作成
+- Laravelプロジェクトの作成
+- データベース接続設定
+- ViteとTypeScriptの設定
 
 :::message
 VSCodeとDockerはすでにインストール済みであることを前提として進めていきます。

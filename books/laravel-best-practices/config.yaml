@@ -37,3 +37,9 @@ chapters:
   - setting-request
   # 定数の設定
   - setting-constants
+  # ページの作成
+  - making-page
+  # APIの設定
+  - setting-api
+  # 認証の設定
+  - setting-authentication
