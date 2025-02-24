@@ -58,3 +58,7 @@ title: "本書について"
 |Bun (Docker)|1.2.2|
 |Debian (Docker)|12 (bookworm)|
 |MariaDB (Docker)|11.4.4|
+
+# 開発サンプルのリポジトリ
+
+この本で開発するアプリケーションの全ソーコードは[GitHub](https://github.com/kkatou7209/laravel-app)上で公開しています。
