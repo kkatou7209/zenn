@@ -100,6 +100,72 @@ $ vite
 ![](/images/making-page_1.png =250x)
 *`localhost:8000`*
 
+同じように他の画面にもレイアウトを適用してください。
+
+```php:/laravel-app/resources/views/login.blade.php
+@extends('layout')
+
+@section('main')
+<div>
+    <h1>ログイン画面</h1>
+</div>
+@endsection
+```
+
+```php:/laravel-app/resources/views/signup.blade.php
+@extends('layout')
+
+@section('main')
+<div>
+    <h1>アカウント登録画面</h1>
+</div>
+@endsection
+```
+
+```php:/laravel-app/resources/views/todo/index.blade.php
+@extends('layout')
+
+@section('main')
+<div>
+    <h1>ToDo一覧</h1>
+    <ul>
+        @foreach ($todos as $todo)
+            <li>{{ $todo->title }}</li>
+        @endforeach
+    </ul>
+</div>
+@endsection
+```
+
+```php:/laravel-app/resources/views/todo/new.blade.php
+@php
+    use App\Enums\Color;
+@endphp
+
+@extends('layout')
+
+@section('main')
+<div>
+    <h1>ToDo登録</h1>
+    <ul>
+        @foreach (Color::cases() as $color)
+            <li>{{ $color->display() }}</li>
+        @endforeach
+    </ul>
+</div>
+@endsection
+```
+
+```php:/laravel-app/resources/views/todo/edit.blade.php
+@extends('layout')
+
+@section('main')
+<div>
+    <h1>ToDo編集</h1>
+</div>
+@endsection
+```
+
 ## `@include`：Bladeの読み込み
 
 次にヘッダーを作ってみましょう。
@@ -162,7 +228,7 @@ $ php artisan make:view common/header
         <div class="flex gap-2">
             <a
                 class="transition duration-300 ease-in-out hover:scale-[1.2] hover:text-blue-500"
-                href="{{ route('todo.create') }}"
+                href="{{ route('todo.new') }}"
             >
                 <span class="material-icons-round text-2xl">add</span>
             </a>
@@ -201,6 +267,8 @@ $ php artisan make:view common/header
 `@include`を使って共通Bladeを読み込んでいます。引数にはview名を指定します。
 
 変更が終わったらブラウザで表示を確認してみてください。
+
+レイアウトを使っているすべてのページでヘッダーが適用されておりことが確認できるはずです。
 
 ![](/images/making-page_2.png)
 *`http://localhost:8000`*
@@ -361,7 +429,7 @@ php artisan make:component Link
 -                   class="transition duration-300 ease-in-out hover:scale-[1.2] hover:text-blue-500"
 -                   href="{{ route('todo.create') }}"
 -               >
-+                   <x-link href="{{ route('todo.create') }}">
++                   <x-link href="{{ route('todo.new') }}">
                         <x-google-icon name="add" class="text-2xl"/>
 +                   </x-link>
 -               </a>
@@ -379,4 +447,8 @@ php artisan make:component Link
 ```
 
 表示に変わりがないか確認してみてください。
+
+# 次に進む前に
+
+ここで各画面のデザインを先に作ってしまおうと思います。
 

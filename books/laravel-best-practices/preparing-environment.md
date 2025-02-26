@@ -10,6 +10,7 @@ title: "開発環境の準備"
 - Laravelプロジェクトの作成
 - データベース接続設定
 - ViteとTypeScriptの設定
+- TailwindCSSの設定
 
 :::message
 VSCodeとDockerはすでにインストール済みであることを前提として進めていきます。
@@ -52,7 +53,7 @@ VSCode が立ち上がったら、左のナビゲーションにある下記の�
 
 一番上に現れた拡張機能をクリックし、インストールしてください。
 
-## コンテナの作成
+## 必要なファイルの作成
 
 次にPHPとMariaDBのコンテナを準備します。
 
@@ -80,20 +81,10 @@ Dev Containers 拡張機能は `devcontainer.json` の設定からコンテナ�
 
 ![](https://storage.googleapis.com/zenn-user-upload/122f23c80237-20250202.png =400x)
 
-<br>
 
-ここまでのディレクトリ構造は以下のようになります。
+## 設定ファイルの編集
 
-```
-laravel-app/
-├── .devcontainer/
-│   ├── app/
-│   │   └── devcontainer.json
-│   └── db
-└── compose.yml
-```
-
----
+### `compose.yml`
 
 次に `compose.yml` でコンテナの設定を行います。`compose.yml` ファイルをクリックしてください。
 
@@ -145,6 +136,8 @@ networks:
   - laravel-app-net
 ```
 
+### `Dockerfile`
+
 次に Laravel のコンテナを作る際の `Dockerfile` を作成します。
 
 `.devcontainer/app` の直下に `Dockerfile` を作成し、以下を貼り付けてください。
@@ -174,6 +167,8 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | b
 4. 次の `RUN` でコンテナないにアプリケーションに必要な Linux ライブラリを読み込んでいます。
 5. その次の `RUN` では PHP のパッケージマネージャーである [**Composer**](https://getcomposer.org/) をインストールしています。
 6. 最後に JavaScript の実行環境である **Node.js** をインストールしています。
+
+### `devcontainer.json`
 
 最後に `devcontainer.json` を編集しましょう。
 
@@ -389,6 +384,8 @@ Laravelの初期画面が表示されていればOKです。
 
 ここではTypeScriptの設定を行います。
 
+## Bunのインストール
+
 TypeScript関連のパッケージをインストールする必要がありますが、まずはパッケージマネージャを変更しましょう。
 
 今回はBunを使います。NPMよりもサイズが小さく、動作も高速なのでコンテナ向きです。
@@ -397,11 +394,15 @@ TypeScript関連のパッケージをインストールする必要がありま�
 $ npm i -g bun
 ```
 
+## TypeScriptのインストール
+
 Bunのインストールが完了したら次はTypeScriptの利用に必要なパッケージをインストールします。
 
 ```bash:/laravel-app
 $ bun i -D typescript @types/jsdom @types/node
 ```
+
+## TypeScriptの設定
 
 次に`tsconfig.json`をプロジェクトルートに作成してください。
 
@@ -444,6 +445,8 @@ $ bun i -D typescript @types/jsdom @types/node
 }
 ```
 
+## Viteの設定
+
 TypeScriptを利用するように変更したので、`vite.config.js`も変更していきます。
 
 拡張子を`ts`に変えて以下のように変更してください。
@@ -470,6 +473,8 @@ TypeScriptを利用している状態では`laravel-vite-plugin`がCSSをその�
 import './bootstrap';
 + import '@css/app.css';
 ```
+
+## ホットリロードの設定
 
 最後にホットリロードの設定を行います。
 
@@ -520,6 +525,8 @@ export default defineConfig({
         ...
 ```
 
+<br>
+
 Viteサーバーを立てて表示に問題がないか確認しましょう。
 
 ```bash:/laravel-app
@@ -539,8 +546,66 @@ $ bun run dev
 
 コンソールにエラーなど出ていなければOKです。
 
+
+# TailwindCSSの設定
+
+**TailwindCSS**はあらかじめ用意されたスタイルをクラス名で指定して適用することができるCSSライブラリです。
+
+カスタマイズも可能で、あらかじめノーマライズもしてくれています。
+
 <br>
 
----
+LaravelのプロジェクトにはすでにTailwindCSSが入っていますが、バージョンが古くなっている（2025年2月現在）ので新しいものに切り替えます。
 
-開発環境の準備は以上です。
+PostCSSを使っていますが、これをViteのプラグインに置き換えます。
+
+## 不要なパッケージの削除
+
+不要になった`postcss`、`autoprefixer`を依存関係から除外します。
+
+ターミナルで以下のコマンドを実行してください。
+
+```bash:/laravel-app
+$ bun rm postcss autoprefixer
+```
+
+`packaeg.json`から上記の項目が消えていることが確認できましたでしょうか。
+
+## Tailwindのアップグレード
+
+次にTailwindをアップグレードしましょう。
+
+これも簡単です。以下のコマンドを入力してください。
+
+```bash:/laravel-app
+$ bun update tailwindcss
+```
+
+バージョンが`3`から`4`に変わっていることを確認してください。
+
+## Viteプラグインのインストール
+
+TailwindをバンドルするためのPostCSSとAutoprefixerを取り除いたので、今の状態ではTailwindを利用することができません。
+
+今回はPostCSSの代わりに`@tailwindcss/vite`というパッケージを利用します。PostCSSより導入が楽です。
+
+```bash:/laravel-app
+$ bun i -D @tailwindcss/vite
+```
+
+インストールが完了したら、`vite.config.ts`にプラグインを追加していきます。
+
+```diff ts:/laravel-app/vite.config.ts
+  ...
++ import tailwindcss from '@tailwindcss/vite';
+  ...
+  export default defineConfig({
+      plugins: [
++         tailwindcss(),
+          laravel({
+              input: ['resources/ts/app.js'],
+              refresh: true,
+          }),
+      ],
+  ...
+```
