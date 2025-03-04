@@ -51,12 +51,25 @@ $ php artisan make:view layout
     @vite(['resources/ts/app.ts'])
     <title>{{ env('APP_NAME') }}</title>
 </head>
-<body class="bg-white">
+<body class="h-dvh w-screen bg-white [&>:box-border]">
 
-    @yield('main')
+    <main class="w-full h-full pt-header">
+        @yield('main')
+    </main>
 
 </body>
 </html>
+```
+
+`app.css`を以下のように変更します。
+
+```css:/laravel-app/resources/css/app.css
+@import "tailwindcss";
+@source "../views";
+
+@theme {
+    --spacing-header: 10vh;
+}
 ```
 
 `@yield`とした部分に他のBladeを埋め込んで利用します。
@@ -201,13 +214,13 @@ $ php artisan make:view common/header
 フォントを適用するのに`app.css`を編集します。
 
 ```diff css:/laravel-app/resources/css/app.css
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
+    @import "tailwindcss";
+    @source "../views";
 
-+   @theme {
+    @theme {
 +       --font-sans: "M PLUS 1", "Noto Sans JP", serif;
-+   }
+        --spacing-header: 10vh;
+    }
 ```
 
 フォントが適用されているか一度確認してみてください。
@@ -217,8 +230,8 @@ $ php artisan make:view common/header
 `header.blade.php`の中身を以下のように変更します。
 
 ```php:/laravel-app/resources/views/common/header.blade.php
-<header class="sticky top-0 left-0 bg-inherit">
-    <div class="w-screen h-[10vh] pl-5 pr-5 flex justify-between items-center">
+<header class="fixed top-0 left-0 bg-inherit z-000">
+    <div class="w-screen h-header pl-5 pr-5 flex justify-between items-center">
         <div>
             <a href="{{ route('home') }}">
                 <h1 class="text-3xl font-bold">{{ env('APP_NAME') }}</h1>
@@ -253,12 +266,13 @@ $ php artisan make:view common/header
 
 ```diff php:/laravel-app/resources/views/layout.blade.php
     ...
--   <body>
-+   <body class="bg-white">
+    <body class="h-dvh w-screen bg-white [&>:box-border]">
 
 +       @include('common.header')
 
-        @yield('main')
+        <main class="w-full h-full pt-header">
+            @yield('main')
+        </main>
 
     </body>
     ...
@@ -357,7 +371,7 @@ Componentファイルは次のようにします。
 コンポーネントを使用する際は接頭辞として`x-`をつけます。早速共通ヘッダーで使ってみましょう。
 
 ```diff php:/laravel-app/resources/views/common/header.blade.php
-    <header class="sticky top-0 left-0 bg-inherit">
+    <header class="fixed top-0 left-0 bg-inherit">
         <div class="w-screen h-[10vh] pl-5 pr-5 flex justify-between items-center">
             <div>
                 <a href="{{ route('home') }}">
@@ -416,7 +430,7 @@ php artisan make:component Link
 ヘッダーを再度書き換えます。
 
 ```diff php:/laravel-app/resources/views/common/header.blade.php
-    <header class="sticky top-0 left-0 bg-inherit">
+    <header class="fixed top-0 left-0 bg-inherit">
         <div class="w-screen h-[10vh] pl-5 pr-5 flex justify-between items-center">
             <div>
                 <a href="{{ route('home') }}">
