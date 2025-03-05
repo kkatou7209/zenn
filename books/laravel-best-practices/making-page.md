@@ -466,3 +466,193 @@ php artisan make:component Link
 
 ここで各画面のデザインを先に作ってしまおうと思います。
 
+新しい内容はないのでそのままコピペしてしまってください。
+
+:::details 各画面のBladeの内容
+
+### ホーム画面
+
+```php:/laravel-app/resources/views/home.blade.php
+@extends('layout')
+
+@section('main')
+<div class="w-full h-full flex justify-center items-center">
+    <h1 class="text-5xl font-semibold -translate-y-header tracking-widest" style="text-shadow: 10px 10px 5px rgba(0, 0, 0, 0.2)">
+        {{ env('APP_NAME') }}
+    </h1>
+</div>
+@endsection
+```
+
+<br>
+
+### ログイン画面
+
+```php:/laravel-app/resources/views/login.blade.php
+@extends('layout')
+
+@section('main')
+<div class="w-full h-full flex justify-center items-center">
+    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200 -translate-y-header">
+        <form>
+            <h2 class="text-xl font-semibold tracking-wider">
+                Login
+            </h2>
+            <div class="w-full h-[1px] mt-2 bg-gray-300"></div>
+            <div class="mt-9 flex gap-6 flex-col">
+                <input type="text" placeholder="ユーザー名" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+                <input type="password" placeholder="パスワード" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+            </div>
+            <div class="mt-10 flex justify-end">
+                <button class="p-3 text-sm text-white bg-blue-500 rounded-sm shadow-md shadow-gray-300">
+                    ログイン
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
+```
+
+<br>
+
+### アカウント登録画面
+
+```php:/laravel-app/resources/views/signup.blade.php
+@extends('layout')
+
+@section('main')
+<div class="w-full h-full flex justify-center items-center">
+    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200 -translate-y-[1rem]">
+        <form>
+            <h2 class="text-xl font-semibold tracking-wider">
+                Sign Up
+            </h2>
+            <div class="w-full h-[1px] mt-2 bg-gray-300"></div>
+            <div class="mt-9 flex gap-6 flex-col">
+                <input type="text" placeholder="ユーザー名" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+                <input type="email" placeholder="メールアドレス" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+                <input type="password" placeholder="パスワード" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+                <input type="password" placeholder="パスワード（確認用）" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+            </div>
+            <div class="mt-10 flex justify-end">
+                <button class="p-3 text-sm text-white bg-blue-500 rounded-sm shadow-md shadow-gray-300">
+                    登録
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
+```
+
+<br>
+
+### ToDo一覧画面
+
+```php:/laravel-app/resources/views/todo/index.blade.php
+@use(Illuminate\Support\Carbon)
+@extends('layout')
+
+@section('main')
+<div class="w-full h-auto pt-14 pb-10 flex flex-col justify-start items-center gap-6">
+
+    @foreach ($todos as $todo)
+
+        <div class="h-auto w-[70vh] py-5 pl-13 pr-6 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200 relative overflow-hidden">
+            <div class="w-[7%] h-full absolute top-0 left-0" style="background-color: {{ $todo->color }}"></div>
+            <form>
+                <div class="flex items-center gap-7">
+                    <div class="mt-2">
+                        <input type="checkbox" @checked($todo->done) class="w-[25px] h-[25px]">
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <x-link href="" class="text-md font-semibold tracking-wider">
+                            {{ $todo->title }}
+                        </x-link>
+                        @if ($todo->memo !== null)
+                            <span class="text-xs">
+                                {{ $todo->memo }}
+                            </span>
+                        @endif
+                        <div class="flex gap-2">
+                            <x-google-icon name="schedule" class="text-[20px]! text-gray-400"/>
+                            <span class="text-xs text-gray-400">
+                                {{ Carbon::create($todo->deadline)->isoFormat('YYYY/MM/DD（ddd）HH:mm') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    @endforeach
+    
+</div>
+@endsection
+```
+
+<br>
+
+### ToDo登録画面
+
+```php:/laravel-app/resources/views/todo/new.blade.php
+@use(App\Enums\Color)
+
+@extends('layout')
+
+@section('main')
+<div class="w-full h-auto pt-14 pb-10 flex justify-center items-start">
+    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200 -translate-y-[1rem]">
+        <form>
+            <h2 class="text-xl font-semibold tracking-wider">
+                New ToDo
+            </h2>
+            <div class="mt-5 flex gap-6 flex-col">
+                <input type="text" placeholder="ToDo" autocomplete="off" class="p-3 text-lg border-b border-gray-400 focus:outline-none focus:border-blue-500">
+                <input type="date" placeholder="期限" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+                <input type="time" placeholder="期限" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+                <textarea placeholder="メモ" class="w-full min-h-20 resize-none field-sizing-content p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500"></textarea>
+            </div>
+            <div class="mt-10 flex justify-end">
+                <button class="p-3 text-sm text-white bg-blue-500 rounded-sm shadow-md shadow-gray-300">
+                    ToDoを追加
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
+```
+
+<br>
+
+### ToDo編集画面
+
+```php:/laravel-app/resources/views/todo/edit.blade.php
+@extends('layout')
+
+@section('main')
+<div class="w-full h-auto pt-14 pb-10 flex justify-center items-start">
+    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200 -translate-y-[1rem]">
+        <form>
+            <h2 class="text-xl font-semibold tracking-wider">
+                Edit ToDo
+            </h2>
+            <div class="mt-5 flex gap-6 flex-col">
+                <input type="text" placeholder="ToDo" autocomplete="off" class="p-3 text-lg border-b border-gray-400 focus:outline-none focus:border-blue-500">
+                <input type="date" placeholder="期限" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+                <input type="time" placeholder="期限" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+                <textarea placeholder="メモ" class="w-full min-h-20 resize-none field-sizing-content p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500"></textarea>
+            </div>
+            <div class="mt-10 flex justify-end">
+                <button class="p-3 text-sm text-white bg-blue-500 rounded-sm shadow-md shadow-gray-300">
+                    ToDoを追加
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
+```
+:::
