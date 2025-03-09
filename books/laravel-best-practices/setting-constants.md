@@ -189,9 +189,8 @@ $ php artisan make:interface Interfaces/Display
 ToDo登録画面のBladeファイルを変更します。
 
 ```diff php:/laravel-app/resources/views/todo/new.blade.php
-+   @php
-+       use App\Enums\Color;
-+   @endphp
++   @use(App\Enums\Color)
+
     <div>
         <h1>ToDo登録</h1>
 +       <ul>
@@ -206,3 +205,9 @@ ToDo登録画面のBladeファイルを変更します。
 
 ![alt text](/images/setting-constants_1.png =250x)
 *`http://127.0.0.1:8000/todo/new`*
+
+:::message
+`@`から始まる新しい構文が出てきましたが、これは**ディレクティブ**といいます。
+
+ディレクティブは後の章で扱います。
+:::

@@ -253,8 +253,9 @@ $ php artisan make:request Todo/DeleteRequest
 -               //
 +               'title' => ['required', 'string'],
 +               'memo' => ['nullable', 'string'],
++               'date' => ['nullable', 'date_format:Y-m-d'],
++               'time' => ['nullable', 'date_format:H:i'],
 +               'color' => ['nullable', 'string'],
-+               'done' => ['required', 'boolean'],
             ];
         }
     }
@@ -290,8 +291,9 @@ $ php artisan make:request Todo/DeleteRequest
 +               'id' => ['required', 'integer'],
 +               'title' => ['required', 'string'],
 +               'memo' => ['nullable', 'string'],
++               'date' => ['nullable', 'date_format:Y-m-d'],
++               'time' => ['nullable', 'date_format:H:i'],
 +               'color' => ['nullable', 'string'],
-+               'done' => ['required', 'boolean'],
             ];
         }
     }
@@ -351,7 +353,6 @@ $ php artisan make:request Todo/DeleteRequest
 -       public function __invoke()
 +       public function __invoke(CreateRequest $request)
         {
-+           $data = $request->validated();
         }
     }
 ```
@@ -365,7 +366,6 @@ $ php artisan make:request Todo/DeleteRequest
 -       public function __invoke()
 +       public function __invoke(UpdateRequest $request)
         {
-+           $data = $request->validated();
         }
 }
 ```
@@ -379,14 +379,11 @@ $ php artisan make:request Todo/DeleteRequest
 -       public function __invoke()
 +       public function __invoke(DeleteRequest $request)
         {
-+           $data = $request->validated();
         }
     }
 ```
 
-`validated`の返り値にはバリデーション後の入力値が連想配列で入っています。
-
-`FormRequest`のバリデーションに引っかかったリクエストには自動的に`419`のレスポンスが返されます。
+`FormRequest`のバリデーションに引っかかったリクエストには自動的に元のページにリダイレクトされます。
 
 まだ認証機能を実装していないのでこれで完成ではありませんが、これでバリデーションの処理をコントローラーから切り離すことができました。
 
@@ -452,7 +449,7 @@ $ php artisan make:request Todo/DeleteRequest
         $this->app->when([
                 Todo\IndexController::class,
                 Todo\NewController::class,
-                Todo\IndexController::class,
+                Todo\EditController::class,
 +               Todo\CreateController::class,
 +               Todo\UpdateController::class,
 +               Todo\DeleteController::class,

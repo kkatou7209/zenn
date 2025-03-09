@@ -27,16 +27,20 @@ chapters:
   - preparing-environment
   # 開発するアプリケーションの仕様
   - system-requirement
-  # データエースの設定
+  # データべースの設定
   - setting-database
   # ルーティングの設定
   - setting-routing
   # コントローラーの設定
   - setting-controllers
+  # サービスプロバイダーの設定
+  - setting-providers
   # リクエスト/バリデーションの設定
   - setting-request
   # 定数の設定
   - setting-constants
+  # コントローラーの実装
+  - impl-controllers
   # ページの作成
   - making-page
   # Bladeのディレクティブ
@@ -45,3 +49,5 @@ chapters:
   - setting-api
   # 認証の設定
   - setting-authentication
+  # まとめ
+  - summerize
