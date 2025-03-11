@@ -418,6 +418,7 @@ $ bun i -D typescript @types/jsdom @types/node
         },
         "target": "ESNext",
         "module": "ESNext",
+        "moduleResolution": "node",
         "types": [
             "vite/client"
         ],
