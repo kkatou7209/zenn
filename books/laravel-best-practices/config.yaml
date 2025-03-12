@@ -1,5 +1,11 @@
 title: "Laravelのススメ"
 summary: "
+本書ではLaravelを使ったWebアプリケーション開発の（俺的）ベストプラクティスを紹介します。\n
+\n
+小さなToDoアプリケーションを作りながらLaravelの使い方を学ぶことができます。\n
+\n
+Laravelのバージョンは12です。\n
+\n
 本書で取り扱うこと\n
 \n
 ・Dockerを使ったLaravelの開発環境の構築\n
@@ -15,9 +21,16 @@ summary: "
 ・一通りのプログラミング経験がある方\n
 ・Webフレームワークを使った開発経験がある方\n
 ・オブジェクト指向言語を利用したことのある方\n
+\n
+\n
+++++++++++++++++++++++++++++++++++++++\n
+\n
+本書はまだ執筆途中です。\n
+途中で内容に変更が加えられることがあります。\n
+あらかじめご容赦ください。\n
 "
 topics: ['laravel', 'ベストプラクティス', 'PHP']
-published: false
+published: true
 price: 0 # 有料の場合200〜5000
 # 本に含めるチャプターを順番に並べましょう
 chapters:
@@ -47,11 +60,11 @@ chapters:
   - blade-directives
   # APIの設定
   - setting-api
-  # 認証の設定
-  - setting-authentication
-  # API認証の設定
-  - setting-api-authemtication
-  # 付録
-  - appendix
-  # まとめ
-  - summerize
+  # # 認証の設定
+  # - setting-authentication
+  # # API認証の設定
+  # - setting-api-authemtication
+  # # まとめ
+  # - summerize
+  # # 付録
+  # - appendix

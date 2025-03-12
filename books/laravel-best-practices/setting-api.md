@@ -228,6 +228,26 @@ class ToggleController extends Controller
 }
 ```
 
+リポジトリも使っているので`RepsitoryServiceProvider`にこのコントローラーを追加しましょう。
+
+```diff php:/laravel-app/app/Providers/RepositoryServiceProvider.php
+    public function register(): void
+    {
+        $this->app->when([
+                Todo\IndexController::class,
+                Todo\NewController::class,
+                Todo\EditController::class,
+                Todo\IndexController::class,
+                Todo\CreateController::class,
+                Todo\UpdateController::class,
+                Todo\DeleteController::class,
++               Api\Todo\ToggleController::class,
+            ])
+            ->needs(Repository::class)
+            ->give(fn() => new TodoRepository());
+    }
+
+```
 
 ## ルートへのコントローラーの設定
 
@@ -399,3 +419,11 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 ```
+
+# まとめ
+
+APIを実装するためにパッケージを追加しましたが、実装の仕方はページを返す場合とほとんど変わりません。
+
+返却するデータがない場合は明示的にステータスコードを返すようにしましょう。そうするとフロントエンド側で状況に応じた処理を実装することができます。
+
+ここで使った`@stack`ディレクティブは、`@push`などを使って柔軟にJavaScriptファイルを読み込ませることができます。
