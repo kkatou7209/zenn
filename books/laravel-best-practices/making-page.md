@@ -466,7 +466,7 @@ php artisan make:component Link
 
 ここで各画面のデザインを先に作ってしまおうと思います。
 
-新しい内容はないのでそのままコピペしてしまってください。
+新しい内容がある場合は適宜説明しますが、ほとんどが既出のトピックなのでそのままコピペで大丈夫です。
 
 :::details 各画面のBladeの内容
 
@@ -493,14 +493,14 @@ php artisan make:component Link
 
 @section('main')
 <div class="w-full h-auto pt-14 pb-10 flex justify-center items-start">
-    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200 -translate-y-header">
-        <form action="{{ route('user.login') }}" method="POST">
+    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200">
+        <form action="{{ route('auth.login') }}" method="POST">
             <h2 class="text-xl font-semibold tracking-wider">
                 Login
             </h2>
             <div class="w-full h-[1px] mt-2 bg-gray-300"></div>
             <div class="mt-9 flex gap-6 flex-col">
-                <input type="text" placeholder="ユーザー名" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
+                <input type="email" placeholder="メールアドレス" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
                 <input type="password" placeholder="パスワード" autocomplete="off" class="p-3 text-xs rounded-md border border-gray-400 focus:outline-blue-500">
             </div>
             <div class="mt-10 flex justify-end">
@@ -523,7 +523,7 @@ php artisan make:component Link
 
 @section('main')
 <div class="w-full h-auto pt-14 pb-10 flex justify-center items-start">
-    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200 -translate-y-[1rem]">
+    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200">
         <form action="{{ route('user.create') }}" method="POST">
             <h2 class="text-xl font-semibold tracking-wider">
                 Sign Up
@@ -568,7 +568,7 @@ php artisan make:component Link
                     <div class="mt-2">
                         <input type="checkbox" class="w-[25px] h-[25px]">
                     </div>
-                    <div class="w-full flex flex-col gap-3">
+                    <div class="w-full flex flex-col items-start gap-3">
                         <x-link href="{{ route('todo.edit', ['id' => $todo->id]) }}" class="text-md font-semibold tracking-wider">
                             {{ $todo->title }}
                         </x-link>
@@ -609,7 +609,7 @@ php artisan make:component Link
 
 @section('main')
 <div class="w-full h-auto pt-14 pb-10 flex justify-center items-start">
-    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200 -translate-y-[1rem]">
+    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200">
         <form action="{{ route('todo.create') }}" method="POST">
             <h2 class="text-xl font-semibold tracking-wider">
                 New ToDo
@@ -648,7 +648,7 @@ php artisan make:component Link
 
 @section('main')
 <div class="w-full h-auto pt-14 pb-10 flex justify-center items-start">
-    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200 -translate-y-[1rem]">
+    <div class="h-auto w-[70vh] py-10 px-14 border-solid border-[0.5px] border-gray-300 rounded-lg shadow-md shadow-gray-200">
         <form action="{{ route('todo.update') }}" method="POST">
             @method('PUT')
             <input type="number" name="id" value="{{ $todo->id }}" class="h-0 invisible">

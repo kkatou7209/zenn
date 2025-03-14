@@ -25,23 +25,13 @@ Laravelではコントローラーの引数の型に`Illuminate\Http\Request`を
 
 |処理|メソッド|URL|
 |:-|:-|:-|
-|ログイン|`POST`|`/user/login`|
-|アカウント新規作成|`POST`|`/user/create`|
 |ToDo新規作成|`POST`|`/todo/create`|
 |ToDo更新|`PUT`|`/todo/update`|
 |ToDo削除|`DELETE`|`/todo/delete`|
 
 今回は先にコントローラーを作りましょう。
 
-```bash:/laravel-app
-$ php artisan make:controller User/LoginController
-
-   INFO  Controller [app/Http/Controllers/User/LoginController.php] created successfully.  
-
-$ php artisan make:controller User/CreateController
-
-   INFO  Controller [app/Http/Controllers/User/CreateController.php] created successfully.  
-
+```bash:/laravel-app 
 $ php artisan make:controller Todo/CreateController
 
    INFO  Controller [app/Http/Controllers/Todo/CreateController.php] created successfully.  
@@ -64,42 +54,6 @@ $ php artisan make:controller Todo/DeleteController
 :::
 
 現状はまだ空の`__invoke`メソッドを用意しておきます。
-
-```diff php:/laravel-app/app/Http/Controllers/User/LoginController.php
-    <?php
-
-    namespace App\Http\Controllers\User;
-
-    use App\Http\Controllers\Controller;
-    use Illuminate\Http\Request;
-
-    class LoginController extends Controller
-    {
--       //
-+       public function __invoke()
-+       {
-+       
-+       }
-    }
-```
-
-```diff php:/laravel-app/app/Http/Controllers/User/CreateController.php
-    <?php
-
-    namespace App\Http\Controllers\User;
-
-    use App\Http\Controllers\Controller;
-    use Illuminate\Http\Request;
-
-    class CreateController extends Controller
-    {
--       //
-+       public function __invoke()
-+       {
-+       
-+       }
-    }
-```
 
 ```diff php:/laravel-app/app/Http/Controllers/Tood/CreateController.php
     <?php
@@ -166,21 +120,13 @@ $ php artisan make:controller Todo/DeleteController
     use App\Http\Controllers\SignupController;
 +   use App\Http\Controllers\User;
     use App\Http\Controllers\Todo;
++   use App\Http\Controllers\Auth;
 
     Route::get('/', HomeController::class)->name('home');
 
     Route::get('/login', LoginController::class)->name('login');
 
     Route::get('/signup', SignupController::class)->name('signup');
-
-+   Route::prefix('/user')
-+       ->as('user.')
-+       ->group(function() {
-+   
-+           Route::post('/login', User\LoginController::class)->name('login');
-+   
-+           Route::post('/create', User\CreateController::class)->name('create');
-+       });
 
     Route::prefix('/todo')
         ->as('todo.')

@@ -159,9 +159,26 @@ $title = $data['title'];
 
 送られてきたデータを扱う処理を追加しましょう。
 
+## データの取得
+
+まずはToDoの一覧を取得する処理を実装しましょう。`IndexController`を次のようにします。
+
+```diff php:
+    public function __invoke()
+    {
++       $todos = $this->repository
++           ->list(1)
++           ->sortBy('deadline');
+
+-       return view('todo.index');
++       return view('todo.index', ['todos' => $todos]);
+    }
+```
+
+
 ## データの登録
 
-まずはToDoを登録する処理からです。`CreateController`を編集しましょう。
+次はToDoを登録する処理です。`CreateController`を編集しましょう。
 
 処理内容は以下のようにしました。
 
@@ -225,7 +242,6 @@ $title = $data['title'];
 +           'memo' => $data['memo'],
 +           'deadline' => $datetime,
 +           'color' => $data['color'],
-+           'user_id' => 1,
 +       ]);
 +   
 +       return redirect()->route('todo.index');

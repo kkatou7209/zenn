@@ -58,7 +58,7 @@ interface Repository
 {
     public function find(int $id): \stdClass|null;
 
-    public function list(): Collection;
+    public function list(int $userId): Collection;
 
     public function add(\stdClass|array $data): void;
 
@@ -91,7 +91,9 @@ class TodoRepository implements Repository
 
     public function list(): Collection
     {
-        return DB::table($this->table)->get();
+        return DB::table($this->table)
+            ->where('user_id', $userId)
+            ->get();
     }
 
     public function add(\stdClass|array $data): void

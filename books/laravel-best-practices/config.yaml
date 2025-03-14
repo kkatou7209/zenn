@@ -60,8 +60,8 @@ chapters:
   - blade-directives
   # APIの設定
   - setting-api
-  # # 認証の設定
-  # - setting-authentication
+  # 認証の設定
+  - setting-authentication
   # # API認証の設定
   # - setting-api-authemtication
   # # まとめ
