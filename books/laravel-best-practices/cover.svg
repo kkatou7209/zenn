@@ -1,0 +1,21 @@
+<svg 
+    width="500" 
+    height="700" 
+    viewBox="0 0 100 100" 
+    xmlns="http://www.w3.org/2000/svg"
+    preserveAspectRatio="none"
+>
+    <rect width="500" height="700" fill="#02024f"/>
+    <path 
+        d="M 5 5, 5 95, 95 95" 
+        fill="#0d00be"
+    />
+    <path 
+        d="M 30 5, 30 70, 95 70, 95 5"
+        fill="#2a47ff"
+    />
+    <path 
+        d="M 60 30, 60 90, 100 60"
+        fill="#697cfc"
+    />
+</svg>

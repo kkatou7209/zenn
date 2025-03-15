@@ -268,6 +268,30 @@ class ToggleController extends Controller
         });
 ```
 
+## ミドルウェアによるレート制限
+
+過剰なリクエストに対する対策としてレート制限を設けます。
+
+今回は1分間あたり`50`リクエストまで抑えます。
+
+`routes/api.php`を次のように編集してください。
+
+```diff php:/laravel-app/routes/api.php
+    ...
+        Route::prefix('/todo')
+            ->as('todo.')
++           ->middleware('throttle:50,1')
+            ->group(function() {
+
+                Route::put('/toggle', ToggleController::class)->name('toggle');
+            });
+    ...
+```
+
+`middlware`メソッドはリクエストとレスポンスの間に処理を挟ませることができるメソッドです。
+
+コールバック関数を渡すこともできますが、今回は`ThrottleRequests`という元々備わっているミドルウェアを利用しました。
+
 
 # Axiosを使ったリクエスト
 
@@ -357,6 +381,7 @@ const toggle = async (id: number, done: boolean): Promise<number> => {
             "Content-Type": 'application/json; charset=utf-8',
         },
         withCredentials: true,
+        withXSRFToken: true,
     });
 
     return res.status;

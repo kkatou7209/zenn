@@ -390,9 +390,7 @@ $ php artisan make:controller Auth/LoginController
 
 これで`/todo`以降のルートはログイン後でないとアクセスできないようになりました。
 
-`middleware`メソッドを使うことでリクエストからコントローラーまでの間に処理を挟むことができます。
-
-`auth`で指定しているのはLaravelがデフォルトで用意している認証関係のミドルウェエアです。
+`middleware`で指定している`auth`はLaravelがデフォルトで用意している認証関係のミドルウェエアです。
 
 もちろんミドルウェアは自身で実装して適用することも可能です。
 
@@ -457,6 +455,21 @@ class LogoutController extends Controller
 `invalidate`でセッションIDを更新し、`regenerateToken`でCSRFトークンを再発行しています。
 
 ログアウトは`Auth::logout`を実行するだけです。
+
+あとはルートを追加しましょう。
+
+```diff php:/laravel-app/routes/web.php
+    ...
+    Route::prefix('/auth')
+        ->as('auth.')
+        ->group(function () {
+
+            Route::post('/login', Auth\LoginController::class)->name('login');
+
++           Route::get('/logout', Auth\LogoutController::class)->name('logout');
+        });
+    ...
+```
 
 
 ## ヘッダーの編集
@@ -637,3 +650,155 @@ class LogoutController extends Controller
 
 # Laravelの認証の仕組み
 
+ここまで使ってきた認証の仕組みをここで説明したいと思います。
+
+## Guard
+
+Laravelの認証はデフォルトではセッションを使います。
+
+設定ファイルの`auth.php`を見てみましょう。
+
+```php:/laravel-app/config/auth.php
+...
+    'defaults' => [
+        'guard' => env('AUTH_GUARD', 'web'),
+        'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
+    ],
+...
+```
+
+Laravelでは認証ロジックを担当するクラスを`Guard`と呼びます。設定ファイル中の`guard`という項目ではデフォルトの認証に`web`という名前がつけられています。
+
+少し下に行くと`guards`という項目があります。
+
+```php:/laravel-app/config/auth.php
+...
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+    ],
+...
+```
+
+この中に`web`という先ほど出てきた名前があります。
+
+さらに辿っていくと次は`driver`という項目がり、`session`という名前が指定されています。この`session`が`Guard`クラスに対応しており、ここでは`SessionGuard`が紐づけられています。
+
+`create_users_table`に一緒に定義されている`sessions`テーブルはこの`Guard`で使うテーブルの定義です。
+
+デフォルトで用意されている他の`Guard`は`/vendor/laravel/framework/src/Illuminate/Auth`を見に行くと見つかります。
+
+:::message
+`driver`自体は何かのクラスに対応するものではありません。
+
+ここでは単に「担当するクラス」程度の意味合いです。
+:::
+
+
+## `UserProvider`
+
+`Guard`が認証のロジックを担当するのに対し、認証する対象のユーザーを扱うのが`UserProvider`クラスです。
+
+先に見た`driver`の項目のすぐ下に`provider`という項目がありますが、ここで`UserProvider`を指定しています。
+
+`provider`に指定する項目は次の`providers`という項目の中にあります。
+
+```php:/laravel-app/config/auth.php
+...
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
+    ],
+...
+```
+
+`provider`で指定した`users`はこの`providers`の中の`users`に対応します。
+
+`driver`には`eloquent`が指定されています。つまり、認証ユーザーの取得にはEloquent（`EloquentUserProvider`）を使うということです。私たちは知らぬ間にEloquentを利用していたということですね。
+
+`model`にはEloquentの`Model`クラスを指定します。`User`クラスが継承している`Authenticatable`クラスも`Model`を継承しているので指定可能というわけです。
+
+`UserProvider`には他にも`DatabaseUserProvider`や自身で実装した`UserProvider`が使えます。
+
+コメントアウトされている部分では`database`を指定することで`DatabaseUserProvider`を呼び出しています。
+
+
+## `Auth`ファサード
+
+設定した`Guard`と`UserProvider`は`Auth`ファサードを使うことで利用することができます。
+
+先ほど使った`Auth::attempt`や`Auth::id`などは、間接的に`Guard`と`UserProvider`を呼び出すことで実装されています。
+
+単に`Auth`と呼び出した場合は`config/auth.php`で指定されたデフォルトの`web`（つまり`SessionGuard`と`EloquentUserProvider`）が呼び出されますが、`guards`に他の`Guard`を追加していれば、`Auth::guard`で任意の`Guard`を呼び出せます（もっとも、実装は大変ですが）。
+
+```php:/laravel-app/config/auth.php
+...
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+        // カスタムしたGuardを追加
+        'custom' => [
+            'driver' => 'custom_guard',
+            'provider' => 'custom_provider',
+        ],
+    ],
+...
+```
+
+```php
+// Auth::guardで呼び出し
+Auth::guard('custom')->attempt($credentials);
+```
+
+## ミドルウェア
+
+`routes/web.php`で`middleware`というメソッドを使い、その際`'auth'`というパラメータを渡しました。
+
+この時も理屈は同じで、`middleware('auth')`でデフォルトの`Guard`を使って認証をチェックするという意味になります。
+
+利用する`Guard`を変えたい場合は、`auth`の後にコロン（`:`）をつけて指定します。先ほど例に出した`custom`を使う場合は次のようになります。
+
+```php
+...
+->middleware('auth:custom')
+...
+```
+
+認証ミドルウェアに引っかかった場合はデフォルトで`/login`にリダイレクトさせられますが、こちらも変更可能です。
+
+`bootstrap/app.php`で`redirectGuestsTo`を使います。
+
+```php
+...
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->redirectGuestsTo('/other_route');
+    })
+...
+```
+
+
+## `@auth`ディレクティブ
+
+Bladeでは`@auth`で認証状況に応じて表示を変えられます。
+
+このディレクティブ、実は引数を取ることができます。
+
+`@auth`ではデフォルトの`Guard`に基づいて認証チェックしますが、`@auth('custom')`とすることで`Guard`を変更できます。
+
+
+# まとめ
+
+認証機能の実装には`Auth`ファサードを使って`Guard`と`UserProvider`の機能を使用します。
+
+今回はEloquent経由でユーザーの取得を行い、ログインとログアウトを実装しました。
