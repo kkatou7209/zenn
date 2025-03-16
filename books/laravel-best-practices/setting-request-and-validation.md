@@ -118,9 +118,7 @@ $ php artisan make:controller Todo/DeleteController
     use App\Http\Controllers\HomeController;
     use App\Http\Controllers\LoginController;
     use App\Http\Controllers\SignupController;
-+   use App\Http\Controllers\User;
     use App\Http\Controllers\Todo;
-+   use App\Http\Controllers\Auth;
 
     Route::get('/', HomeController::class)->name('home');
 
@@ -299,6 +297,7 @@ $ php artisan make:request Todo/DeleteRequest
 -       public function __invoke()
 +       public function __invoke(CreateRequest $request)
         {
+
         }
     }
 ```
@@ -312,6 +311,7 @@ $ php artisan make:request Todo/DeleteRequest
 -       public function __invoke()
 +       public function __invoke(UpdateRequest $request)
         {
+
         }
 }
 ```
@@ -325,6 +325,7 @@ $ php artisan make:request Todo/DeleteRequest
 -       public function __invoke()
 +       public function __invoke(DeleteRequest $request)
         {
+
         }
     }
 ```
@@ -404,3 +405,10 @@ $ php artisan make:request Todo/DeleteRequest
             ->give(fn() => new TodoRepository());
     ...
 ```
+
+
+# まとめ
+
+リクエストデータのバリデーションはコントローラー上で行う方法もありますが、今回は`FormRequest`を使い、コントローラーからバリデーションの処理を分離させました。
+
+バリデーションルールは`FormRequest`上の`rules`メソッドで配列を返すことで実装できます。

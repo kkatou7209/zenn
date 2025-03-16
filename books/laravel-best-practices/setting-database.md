@@ -4,6 +4,10 @@ title: "データベースの設定"
 
 # 概要
 
+データ構造が決まらなければ開発には入れません。一番最初に行うのはテーブルの定義とモックデータの作成です。
+
+テーブルの定義には**マイグレーションファイル**を、モックデータの作成には**Seeder**と**Faker**を使います。
+
 ## 本章で学ぶこと
 
 - マイグレーションファイル
@@ -31,6 +35,7 @@ Query BuilderはSQLと近い文法で記述でき、実際の処理も直にSQL�
 ORMがいいか、それともSQLがいいかについての議論はネット上にたくさんありますので、よかったらご自身で調べてみてください。
 :::
 
+
 # マイグレーション
 
 LaravelのマイグレーションはPHPファイルからテーブルの定義・作成を行う機能です。
@@ -54,6 +59,8 @@ php artisan make:migration "create todos table"
 
    INFO  Migration [database/migrations/xxxx_xx_xx_xxxxxx_create_todos_table.php] created successfully.  
 ```
+
+`php artisan make:migration "create {テーブル名} table"`で作成できます。
 
 作成した時点ではこのようになっているはずです。
 
@@ -547,3 +554,14 @@ Psy Shell v0.12.7 (PHP 8.4.3 — cli) by Justin Hileman
 ```
 
 Seederについての説明は以上ですが、開発を進めるにあたって必要であれば適宜説明を行います。
+
+
+# まとめ
+
+自動化できるところは自動化しておきたいものです。
+
+LaravelではマイグレーションファイルとSeederを使って自動化できます。
+
+モックデータを日本語化したい時は`.env`ファイルの`APP_FAKER_LOCALE`に`ja`を設定することで、Fakerの出力の一部を日本語化できます。
+
+テーブル定義を更新するときは再度`php artisan migrate`を実行することで更新できます。中のデータを初期化してかまわない時は`php artisan migrate:fresh`で初期化とテーブル定義の更新が同時に実行可能です。

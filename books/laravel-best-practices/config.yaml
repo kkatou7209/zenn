@@ -30,7 +30,7 @@ summary: "
 あらかじめご容赦ください。\n
 "
 topics: ['laravel', 'ベストプラクティス', 'PHP']
-published: false
+published: true
 price: 0 # 有料の場合200〜5000
 # 本に含めるチャプターを順番に並べましょう
 chapters:
@@ -64,5 +64,5 @@ chapters:
   - setting-authentication
   # API認証の設定
   - setting-api-authentication
-  # まとめ
+  # あとがき
   - afterword

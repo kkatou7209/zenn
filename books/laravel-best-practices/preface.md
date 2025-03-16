@@ -27,8 +27,7 @@ title: "本書について"
 - PHPの基礎文法
 - HTTPなどのプロトコルの説明
 - JavaScript、HTML、CSSの説明
-- SanctumやPassportなどのパッケージの詳細
-- オブジェクト指向
+- Laravelパッケージの詳細
 
 
 # 対象とする読者

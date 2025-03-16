@@ -89,7 +89,7 @@ class TodoRepository implements Repository
             ->first();
     }
 
-    public function list(): Collection
+    public function list(int $userId): Collection
     {
         return DB::table($this->table)
             ->where('user_id', $userId)
@@ -222,7 +222,7 @@ $ php artisan make:provider RepositoryServiceProvider
         {
 -           return view('todo.index');
 
-+           $todos = $this->repository->list()
++           $todos = $this->repository->list(1)
 +               ->sortBy('deadline');
 +   
 +           return view('todo.index', ['todos' => $todos]);
@@ -294,3 +294,12 @@ $ php artisan make:provider RepositoryServiceProvider
 Seederで登録した内容が表示されてるでしょうか。
 
 ![alt text](/images/setting-controller_1.png =250x)
+
+
+# まとめ
+
+サービスプロバイダーはLaravelのDI機能の要です。
+
+今回はそのサービスプロバイダーを使って`Repository`を実装しました。
+
+プロバイダーは`php artisan make:provider`で作成し、`bootstrap/privider.php`で登録します。
