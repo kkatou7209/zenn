@@ -1,0 +1,14 @@
+title: "JavaScript ハンズオンチュートリアル"
+summary: "
+本書では JavaScript の基礎を実際に JavaScript を動かしながら学ぶことができます。\n
+\n
+専門的なトピックは極力扱いませんので、身構えずに楽しみながら学習してください。\n
+"
+topics: [JavaScript, チュートリアル, 入門, 本]
+published: false
+price: 0 # 有料の場合200〜5000
+# 本に含めるチャプターを順番に並べましょう
+chapters:
+  - 1-preface
+  - 2-write-simple-program
+  - 3-setup
