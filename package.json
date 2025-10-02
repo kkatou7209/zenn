@@ -1,10 +1,9 @@
 {
   "name": "articles",
-  "scripts": {
-  },
+  "scripts": {},
   "author": "kkatou7209 <kkatou7209@gmail.com>",
   "description": "記事の管理",
   "dependencies": {
-    "zenn-cli": "^0.1.158"
+    "zenn-cli": "^0.2.3"
   }
 }
